@@ -1,0 +1,44 @@
+import requests
+from bs4 import BeautifulSoup
+
+def search_amazon(product_name):
+    base_url = "https://www.amazon.in/s?k="
+    search_url = base_url + product_name.replace(" ", "+")
+    response = requests.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # Extracting the price and rating from the Amazon page
+    price_element = soup.find('span', {'class': 'a-price'})
+    rating_element = soup.find('span', {'class': 'a-icon-alt'})
+
+    price = price_element.find('span', {'class': 'a-offscreen'}).text.strip() if price_element else "No price found"
+    rating = rating_element.text.strip() if rating_element else "No rating found"
+
+    return f"Amazon: Price - {price}, Rating - {rating}"
+
+def search_flipkart(product_name):
+    base_url = "https://www.flipkart.com/search?q="
+    search_url = base_url + product_name.replace(" ", "%20")
+    response = requests.get(search_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # Extracting the price and rating from the Flipkart page
+    price_element = soup.find('div', {'class': '_30jeq3'})
+    rating_element = soup.find('div', {'class': '_3LWZlK'})
+
+    price = price_element.text.strip() if price_element else "No price found"
+    rating = rating_element.text.strip() if rating_element else "No rating found"
+
+    return f"Flipkart: Price - {price}, Rating - {rating}"
+
+def main():
+    product_name = input("Enter the product name: ")
+    amazon_result = search_amazon(product_name)
+    flipkart_result = search_flipkart(product_name)
+
+    print("\nPrice and Rating Comparison:")
+    print(amazon_result)
+    print(flipkart_result)
+
+if __name__ == "__main__":
+    main()

@@ -1,1 +1,1 @@
-# inter-project-1
+# internship-project-1
